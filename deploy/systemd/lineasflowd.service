@@ -1,0 +1,11 @@
+[Unit]
+Description=LineasFlows Edge-Mesh Daemon
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/lineasflowd
+Restart=always
+User=root
+
+[Install]
+WantedBy=multi-user.target
