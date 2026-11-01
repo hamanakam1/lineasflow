@@ -6,6 +6,7 @@ import (
 
 	"github.com/hamanakam1/lineasflow/internal/mesh"
 	"github.com/hamanakam1/lineasflow/internal/shm"
+	"github.com/hamanakam1/lineasflow/pkg/types"
 )
 
 func main() {
@@ -22,13 +23,13 @@ func main() {
 	defer bc.Close()
 
 	var lastSeq uint64
-	buf := make([]byte, 0) // unused
-	_ = buf
+	var buf [types.MatchReceiptSize]byte
 	for {
 		r := b.Read()
 		if r.Dirty != 0 && r.SeqNum != lastSeq {
 			lastSeq = r.SeqNum
-			bc.Send(&r)
+			r.Encode(buf[:])
+			bc.SendBytes(buf[:])
 		}
 		time.Sleep(time.Microsecond * 100)
 	}

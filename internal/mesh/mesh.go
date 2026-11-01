@@ -31,6 +31,11 @@ func (b *Broadcaster) Send(r *types.MatchReceipt) error {
 	return err
 }
 
+func (b *Broadcaster) SendBytes(buf []byte) error {
+	_, err := b.conn.Write(buf)
+	return err
+}
+
 func (b *Broadcaster) Close() error { return b.conn.Close() }
 
 func itoa(n int) string {
