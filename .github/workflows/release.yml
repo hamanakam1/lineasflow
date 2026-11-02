@@ -1,0 +1,20 @@
+name: release
+on:
+  push:
+    tags: ['v*']
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+      - run: sudo apt-get update && sudo apt-get install -y gcc-aarch64-linux-gnu
+      - run: GOARCH=arm64 GOOS=darwin CGO_ENABLED=1 go build -o lineasflowd-mac ./cmd/lineasflowd || GOARCH=arm64 GOOS=darwin CGO_ENABLED=0 go build -o lineasflowd-mac ./cmd/lineasflowd
+      - run: CC=aarch64-linux-gnu-gcc CGO_ENABLED=1 GOARCH=arm64 GOOS=linux go build -o lineasflowd-pi ./cmd/lineasflowd
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            lineasflowd-mac
+            lineasflowd-pi
